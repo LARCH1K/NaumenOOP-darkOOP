@@ -14,10 +14,13 @@ public class DiscordBot {
 
     private final String token;
 
+    private final BotMessageProcessor botMessageProcessor;
+
     private GatewayDiscordClient client;
 
-    public DiscordBot(String token) {
+    public DiscordBot(String token, BotMessageProcessor botMessageProcessor) {
         this.token = token;
+        this.botMessageProcessor = botMessageProcessor;
     }
 
     public void start() {
@@ -34,7 +37,8 @@ public class DiscordBot {
                     if (eventMessage.getAuthor().map(user -> !user.isBot()).orElse(false)) {
                         String chatId = eventMessage.getChannelId().asString();
                         String messageFromUser = eventMessage.getContent();
-                        // TODO обработайте сообщение от пользователя (messageFromUser)
+                        String answerMessage = botMessageProcessor.processYourMessage(messageFromUser);
+                        sendMessage(chatId, answerMessage);
                     }
                 });
         System.out.println("Discord бот запущен");
