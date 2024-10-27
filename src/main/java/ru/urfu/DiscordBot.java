@@ -12,17 +12,35 @@ import discord4j.core.object.entity.channel.MessageChannel;
  */
 public class DiscordBot {
 
+    /**
+     * Токен для аутентификации бота в Discord
+     */
     private final String token;
 
+    /**
+     * Обработчик сообщений
+     */
     private final BotMessageProcessor botMessageProcessor;
 
+    /**
+     * Клиент для взаимодействия с Discord
+     */
     private GatewayDiscordClient client;
 
+    /**
+     * Конструктор для создания экземпляра DiscordBot.
+     *
+     * @param token токен для аутентификации бота в Discord
+     * @param botMessageProcessor обработчик сообщений
+     */
     public DiscordBot(String token, BotMessageProcessor botMessageProcessor) {
         this.token = token;
         this.botMessageProcessor = botMessageProcessor;
     }
 
+    /**
+     * Запуск бота
+     */
     public void start() {
         client = DiscordClient.create(token).login().block();
         if (client == null) {

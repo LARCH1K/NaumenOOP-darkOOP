@@ -12,6 +12,6 @@ public class BotMessageProcessor {
      * @return обработанное сообщение, содержащее текст "Ваше сообщение:" и текст исходного сообщения.
      */
     public String processYourMessage(String message) {
-        return "Ваше сообщение: " + message;
+        return String.format("Ваше сообщение: %s", message);
     }
 }
