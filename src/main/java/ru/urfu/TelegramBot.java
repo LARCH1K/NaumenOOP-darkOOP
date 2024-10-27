@@ -13,13 +13,32 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
  */
 public class TelegramBot extends TelegramLongPollingBot {
 
+    /**
+     * Имя бота в Telegram
+     */
     private final String telegramBotName;
 
-    public TelegramBot(String telegramBotName, String token) {
+    /**
+     * Обработчик сообщений
+     */
+    private final BotMessageProcessor botMessageProcessor;
+
+    /**
+     * Конструктор для создания экземпляра TelegramBot.
+     *
+     * @param telegramBotName Имя бота в Telegram
+     * @param token токен для аутентификации бота в Telegram
+     * @param botMessageProcessor обработчик сообщений
+     */
+    public TelegramBot(String telegramBotName, String token, BotMessageProcessor botMessageProcessor) {
         super(token);
         this.telegramBotName = telegramBotName;
+        this.botMessageProcessor = botMessageProcessor;
     }
 
+    /**
+     * Запуск бота
+     */
     public void start() {
         try {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
@@ -30,13 +49,18 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+    /**
+     * Обрабатывает входящие обновления от Telegram.
+     * @param update обновление, полученное от Telegram
+     */
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
             Message updateMessage = update.getMessage();
             Long chatId = updateMessage.getChatId();
             String messageFromUser = updateMessage.getText();
-            // TODO обработайте сообщение от пользователя (messageFromUser)
+            String answerMessage = botMessageProcessor.processYourMessage(messageFromUser);
+            sendMessage(chatId.toString(), answerMessage);
         }
     }
 
@@ -57,6 +81,10 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+    /**
+     * Возвращает имя бота.
+     * @return имя бота в Telegram
+     */
     @Override
     public String getBotUsername() {
         return telegramBotName;
